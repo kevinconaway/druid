@@ -24,8 +24,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import io.druid.java.util.common.granularity.Granularities;
-import io.druid.java.util.common.guava.Sequences;
-import io.druid.segment.writeout.OffHeapMemorySegmentWriteOutMediumFactory;
 import io.druid.query.Druids;
 import io.druid.query.QueryDataSource;
 import io.druid.query.aggregation.CountAggregatorFactory;
@@ -48,9 +46,10 @@ import io.druid.segment.QueryableIndex;
 import io.druid.segment.column.ValueType;
 import io.druid.segment.incremental.IncrementalIndexSchema;
 import io.druid.segment.virtual.ExpressionVirtualColumn;
-import io.druid.server.security.NoopEscalator;
+import io.druid.segment.writeout.OffHeapMemorySegmentWriteOutMediumFactory;
 import io.druid.server.security.AuthConfig;
 import io.druid.server.security.AuthTestUtils;
+import io.druid.server.security.NoopEscalator;
 import io.druid.sql.calcite.filtration.Filtration;
 import io.druid.sql.calcite.planner.Calcites;
 import io.druid.sql.calcite.planner.DruidOperatorTable;
@@ -71,7 +70,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QuantileSqlAggregatorTest
@@ -174,7 +172,7 @@ public class QuantileSqlAggregatorTest
       final PlannerResult plannerResult = planner.plan(sql);
 
       // Verify results
-      final List<Object[]> results = Sequences.toList(plannerResult.run(), new ArrayList<Object[]>());
+      final List<Object[]> results = plannerResult.run().toList();
       final List<Object[]> expectedResults = ImmutableList.of(
           new Object[]{
               1.0,
@@ -256,7 +254,7 @@ public class QuantileSqlAggregatorTest
       final PlannerResult plannerResult = planner.plan(sql);
 
       // Verify results
-      final List<Object[]> results = Sequences.toList(plannerResult.run(), new ArrayList<Object[]>());
+      final List<Object[]> results = plannerResult.run().toList();
       final List<Object[]> expectedResults = ImmutableList.of(
           new Object[]{1.0, 3.0, 5.880000114440918, 5.940000057220459, 6.0, 4.994999885559082, 6.0}
       );
@@ -309,7 +307,7 @@ public class QuantileSqlAggregatorTest
       final PlannerResult plannerResult = planner.plan(sql);
 
       // Verify results
-      final List<Object[]> results = Sequences.toList(plannerResult.run(), new ArrayList<Object[]>());
+      final List<Object[]> results = plannerResult.run().toList();
       final List<Object[]> expectedResults = ImmutableList.of(
           new Object[]{7.0, 8.26386833190918}
       );
